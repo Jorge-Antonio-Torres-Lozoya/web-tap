@@ -1,0 +1,120 @@
+.auth {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: radial-gradient(120% 120% at 30% 0%, #2a2620 0%, #1a1916 45%, #121110 100%);
+  overflow: auto;
+}
+
+.auth__brandmark {
+  position: absolute;
+  right: 28px;
+  top: 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .22em;
+  color: rgba(255, 255, 255, .35);
+  text-transform: uppercase;
+}
+
+.auth__status {
+  position: absolute;
+  left: 26px;
+  bottom: 22px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  line-height: 1.7;
+  color: rgba(255, 196, 0, .85);
+
+  .dim { color: rgba(255, 255, 255, .4); }
+}
+
+.authcard {
+  width: 100%;
+  max-width: 412px;
+  background: var(--card);
+  border-radius: var(--r-lg);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6);
+  overflow: hidden;
+  animation: auth-in .55s var(--ease-out);
+}
+
+@keyframes auth-in {
+  from { opacity: 0; transform: translateY(14px); }
+}
+
+.authcard__top { height: 4px; background: var(--hi); }
+.authcard__pad { padding: 34px 38px 26px; }
+
+.authbanner {
+  height: 96px;
+  border-radius: var(--r);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 26px;
+  background:
+    linear-gradient(90deg, rgba(17, 17, 20, .92), rgba(17, 17, 20, .55)),
+    repeating-linear-gradient(135deg, #2c2c30 0 18px, #26262a 18px 36px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+}
+
+.authbanner__lg {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  background: #0A0A0A;
+  border: 1.5px solid #fff;
+  border-radius: 6px;
+  padding: 7px;
+}
+
+.authbanner__tx {
+  b { color: #fff; font-size: 13px; letter-spacing: .02em; display: block; }
+  small {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: .2em;
+    color: rgba(255, 196, 0, .9);
+    text-transform: uppercase;
+  }
+}
+
+.authbanner__bar {
+  position: absolute;
+  left: 0;
+  right: 38%;
+  bottom: 0;
+  height: 3px;
+  background: var(--hi);
+}
+
+h1 { font-size: 23px; font-weight: 700; letter-spacing: -.01em; }
+
+.sub {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .2em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: 5px;
+  margin-bottom: 26px;
+}
+
+.authcard__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}

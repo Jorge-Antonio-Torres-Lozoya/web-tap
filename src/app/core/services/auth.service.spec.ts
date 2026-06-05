@@ -5,7 +5,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideRouter } from '@angular/router';
 import { AuthService } from './auth.service';
 import { AuthUser } from '../models';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 
 const USER: AuthUser = {
   id: '1',

@@ -1,0 +1,44 @@
+.ua {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background-color: var(--paper);
+  background-image: radial-gradient(rgba(20, 20, 22, .05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.ua__card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-card);
+  padding: 36px;
+  text-align: center;
+}
+
+.ua__icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r);
+  background: var(--hi-tint);
+  color: var(--hi-deep);
+
+  svg { width: 26px; height: 26px; }
+}
+
+h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+p { color: var(--muted); font-size: 14px; line-height: 1.55; margin-bottom: 24px; }
+
+.ua__actions {
+  display: flex;
+  gap: 10px;
+
+  .btn { flex: 1; }
+}

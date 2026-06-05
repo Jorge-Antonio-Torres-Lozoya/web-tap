@@ -32,3 +32,9 @@
 // Text
 .text-muted { color: var(--muted); }
 .text-danger { color: var(--danger); }
+
+.link-muted {
+  color: var(--muted);
+  cursor: pointer;
+  &:hover { color: var(--ink); }
+}

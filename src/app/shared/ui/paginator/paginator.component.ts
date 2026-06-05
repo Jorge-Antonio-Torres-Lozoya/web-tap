@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { PaginationMeta } from '../../../core/models';
+import { PaginationMeta } from '@core/models';
 
 @Component({
   selector: 'app-paginator',

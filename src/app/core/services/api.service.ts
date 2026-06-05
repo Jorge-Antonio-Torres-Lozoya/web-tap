@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 import { ApiResponse, PaginatedResponse, PaginationMeta } from '../models';
 
 export type QueryParams = Record<string, string | number | boolean | null | undefined>;
