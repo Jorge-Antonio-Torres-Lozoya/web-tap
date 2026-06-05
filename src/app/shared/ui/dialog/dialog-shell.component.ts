@@ -13,7 +13,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
           @if (eyebrow()) {
             <span class="eyebrow">{{ eyebrow() }}</span>
           }
-          <h3>{{ title() }}</h3>
+          <h3>{{ heading() }}</h3>
         </div>
         <button type="button" class="dialog__close" (click)="close.emit()" aria-label="Cerrar">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
@@ -32,7 +32,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
   styleUrl: './dialog-shell.component.scss',
 })
 export class DialogShellComponent {
-  readonly title = input('');
+  readonly heading = input('');
   readonly eyebrow = input<string>();
   readonly close = output<void>();
 }

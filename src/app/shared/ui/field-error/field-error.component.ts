@@ -82,6 +82,8 @@ export class FieldErrorComponent {
         const error: MaxError = errors['max'];
         return `El valor máximo es ${error.max}.`;
       }
+      case 'integer':
+        return 'Debe ser un número entero.';
       case 'pattern':
         return 'Formato no válido.';
       default: {

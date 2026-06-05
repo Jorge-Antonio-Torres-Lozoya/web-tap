@@ -14,7 +14,7 @@ export interface ConfirmData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DialogShellComponent],
   template: `
-    <app-dialog-shell eyebrow="/ confirmar" [title]="data.title" (close)="ref.close(false)">
+    <app-dialog-shell eyebrow="/ confirmar" [heading]="data.title" (close)="ref.close(false)">
       <p>{{ data.message }}</p>
       <div dialogFooter>
         <button type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close(false)">Cancelar</button>

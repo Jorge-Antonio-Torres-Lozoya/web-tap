@@ -1,19 +1,110 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Dialog } from '@angular/cdk/dialog';
+import { ProductsService } from '@core/services/products.service';
+import { ToastService } from '@shared/ui/toast/toast.service';
+import { ConfirmService } from '@shared/ui/confirm/confirm.service';
+import { saveBlob } from '@core/utils/download-file.util';
+import { Product, PaginationMeta } from '@core/models';
+import { PaginatorComponent } from '@shared/ui/paginator/paginator.component';
+import { ProductFormComponent } from '../product-form/product-form.component';
+import { ProductDetailComponent } from '../product-detail/product-detail.component';
 
-// Placeholder — implemented in Phase 4.
 @Component({
   selector: 'app-products-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="page-head">
-      <div>
-        <h2>Gestión de Productos</h2>
-        <p>Catálogo de productos y precios del sistema.</p>
-      </div>
-    </div>
-    <div class="tablecard">
-      <div class="state-block">Módulo de productos — en construcción (Fase 4).</div>
-    </div>
-  `,
+  imports: [DatePipe, PaginatorComponent],
+  templateUrl: './products-list.component.html',
 })
-export class ProductsListComponent {}
+export class ProductsListComponent implements OnInit {
+  private readonly products = inject(ProductsService);
+  private readonly dialog = inject(Dialog);
+  private readonly confirm = inject(ConfirmService);
+  private readonly toast = inject(ToastService);
+
+  readonly items = signal<Product[]>([]);
+  readonly meta = signal<PaginationMeta | null>(null);
+  readonly loading = signal(false);
+  readonly error = signal(false);
+
+  ngOnInit(): void {
+    this.load(1);
+  }
+
+  load(page: number): void {
+    this.loading.set(true);
+    this.error.set(false);
+    this.products.list(page).subscribe({
+      next: (result) => {
+        this.items.set(result.items);
+        this.meta.set(result.meta);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.error.set(true);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  openCreate(): void {
+    this.dialog
+      .open<boolean>(ProductFormComponent, { data: { mode: 'create' }, backdropClass: 'tap-backdrop' })
+      .closed.subscribe((saved) => {
+        if (saved) this.reload();
+      });
+  }
+
+  openEdit(product: Product): void {
+    this.dialog
+      .open<boolean>(ProductFormComponent, { data: { mode: 'edit', product }, backdropClass: 'tap-backdrop' })
+      .closed.subscribe((saved) => {
+        if (saved) this.reload();
+      });
+  }
+
+  openDetail(product: Product): void {
+    this.dialog
+      .open<'edit'>(ProductDetailComponent, { data: { product }, backdropClass: 'tap-backdrop' })
+      .closed.subscribe((action) => {
+        if (action === 'edit') this.openEdit(product);
+      });
+  }
+
+  async remove(product: Product): Promise<void> {
+    const confirmed = await this.confirm.confirm({
+      title: 'Eliminar producto',
+      message: `¿Eliminar ${product.code} — ${product.name}? Esta acción no se puede deshacer.`,
+      confirmText: 'Eliminar',
+      danger: true,
+    });
+    if (!confirmed) return;
+
+    this.products.remove(product.id).subscribe({
+      next: () => {
+        this.toast.success('Producto eliminado.');
+        this.reload();
+      },
+      error: () => this.toast.error('No se pudo eliminar el producto.'),
+    });
+  }
+
+  exportPdf(): void {
+    this.products.exportPdf().subscribe({
+      next: (blob) => saveBlob(blob, 'productos.pdf'),
+      error: () => this.toast.error('No se pudo descargar el PDF.'),
+    });
+  }
+
+  exportExcel(): void {
+    this.products.exportExcel().subscribe({
+      next: (blob) => saveBlob(blob, 'productos.xlsx'),
+      error: () => this.toast.error('No se pudo descargar el Excel.'),
+    });
+  }
+
+  // Reload the current page after a mutation.
+  private reload(): void {
+    this.load(this.meta()?.current_page ?? 1);
+  }
+}

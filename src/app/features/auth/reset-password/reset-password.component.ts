@@ -6,10 +6,9 @@ import { AuthService } from '@core/services/auth.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
 import { parseValidationError } from '@core/utils/validation-error.util';
 import { passwordMatch } from '@core/utils/password-match.validator';
+import { PASSWORD_PATTERN } from '@core/utils/password.util';
 import { AuthCardComponent } from '../auth-card/auth-card.component';
 import { FieldErrorComponent } from '@shared/ui/field-error/field-error.component';
-
-const HAS_LETTER_AND_NUMBER = /^(?=.*[A-Za-z])(?=.*\d).+$/;
 
 @Component({
   selector: 'app-reset-password',
