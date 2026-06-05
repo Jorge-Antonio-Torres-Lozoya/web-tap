@@ -22,10 +22,8 @@ export interface ProductDetailData {
         <div class="dl-row"><span class="k">Fecha de creación</span><span class="v mono">{{ data.product.created_at | date: 'dd/MM/yyyy HH:mm' }}</span></div>
       </div>
 
-      <div dialogFooter>
-        <button type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close()">Cerrar</button>
-        <button type="button" class="btn btn--dark" style="flex:1" (click)="ref.close('edit')">Editar</button>
-      </div>
+      <button dialogFooter type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close()">Cerrar</button>
+      <button dialogFooter type="button" class="btn btn--dark" style="flex:1" (click)="ref.close('edit')">Editar</button>
     </app-dialog-shell>
   `,
 })

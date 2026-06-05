@@ -16,19 +16,18 @@ export interface ConfirmData {
   template: `
     <app-dialog-shell eyebrow="/ confirmar" [heading]="data.title" (close)="ref.close(false)">
       <p>{{ data.message }}</p>
-      <div dialogFooter>
-        <button type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close(false)">Cancelar</button>
-        <button
-          type="button"
-          class="btn"
-          style="flex:1"
-          [class.btn--danger]="data.danger"
-          [class.btn--dark]="!data.danger"
-          (click)="ref.close(true)"
-        >
-          {{ data.confirmText ?? 'Confirmar' }}
-        </button>
-      </div>
+      <button dialogFooter type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close(false)">Cancelar</button>
+      <button
+        dialogFooter
+        type="button"
+        class="btn"
+        style="flex:1"
+        [class.btn--danger]="data.danger"
+        [class.btn--dark]="!data.danger"
+        (click)="ref.close(true)"
+      >
+        {{ data.confirmText ?? 'Confirmar' }}
+      </button>
     </app-dialog-shell>
   `,
 })

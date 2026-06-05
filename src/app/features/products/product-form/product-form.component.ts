@@ -22,13 +22,12 @@ export interface ProductFormData {
   template: `
     <app-dialog-shell [eyebrow]="isEdit ? '/ edición' : '/ alta de registro'" [heading]="isEdit ? 'Editar producto' : 'Nuevo producto'" (close)="ref.close()">
       <form class="form" [formGroup]="form" (ngSubmit)="save()">
-        <div class="field">
-          <label class="flab">Código (auto-generado)</label>
-          <div class="ro-code">
-            {{ data.product?.code ?? 'PRD-—— · se asigna al guardar' }}
-            <span class="tg">SOLO LECTURA</span>
+        @if (data.product; as product) {
+          <div class="field">
+            <label class="flab">Código</label>
+            <div class="ro-code">{{ product.code }}<span class="tg">SOLO LECTURA</span></div>
           </div>
-        </div>
+        }
 
         <div class="field">
           <label class="flab" for="name">Nombre <span class="req">*</span></label>
@@ -50,12 +49,10 @@ export interface ProductFormData {
         </div>
       </form>
 
-      <div dialogFooter>
-        <button type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close()">Cancelar</button>
-        <button type="button" class="btn btn--hi btn--uc" style="flex:1.3" [disabled]="submitting()" (click)="save()">
-          {{ submitting() ? 'Guardando…' : 'Guardar' }}
-        </button>
-      </div>
+      <button dialogFooter type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close()">Cancelar</button>
+      <button dialogFooter type="button" class="btn btn--hi btn--uc" style="flex:1.3" [disabled]="submitting()" (click)="save()">
+        {{ submitting() ? 'Guardando…' : 'Guardar' }}
+      </button>
     </app-dialog-shell>
   `,
 })

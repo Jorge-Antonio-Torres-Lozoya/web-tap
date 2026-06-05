@@ -90,15 +90,23 @@ export class ProductsListComponent implements OnInit {
   }
 
   exportPdf(): void {
+    this.toast.show('Generando PDF…', 'info');
     this.products.exportPdf().subscribe({
-      next: (blob) => saveBlob(blob, 'productos.pdf'),
+      next: (blob) => {
+        saveBlob(blob, 'productos.pdf');
+        this.toast.success('Descarga lista.');
+      },
       error: () => this.toast.error('No se pudo descargar el PDF.'),
     });
   }
 
   exportExcel(): void {
+    this.toast.show('Generando Excel…', 'info');
     this.products.exportExcel().subscribe({
-      next: (blob) => saveBlob(blob, 'productos.xlsx'),
+      next: (blob) => {
+        saveBlob(blob, 'productos.xlsx');
+        this.toast.success('Descarga lista.');
+      },
       error: () => this.toast.error('No se pudo descargar el Excel.'),
     });
   }
