@@ -1,29 +1,36 @@
 import { describe, it, expect } from 'vitest';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, provideRouter, UrlTree } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { sectionGuard } from './section.guard';
 import { AuthService } from '../services/auth.service';
 import { SectionSlug } from '../models';
 
-function run(granted: SectionSlug[], required: SectionSlug): boolean | UrlTree {
+@Component({ template: '' })
+class BlankComponent {}
+
+async function urlAfterVisiting(granted: SectionSlug[], section: SectionSlug): Promise<string> {
   TestBed.configureTestingModule({
     providers: [
-      provideRouter([]),
+      provideRouter([
+        { path: 'unauthorized', component: BlankComponent },
+        { path: 'p', component: BlankComponent, canActivate: [sectionGuard], data: { section } },
+      ]),
       { provide: AuthService, useValue: { hasSection: (s: SectionSlug) => granted.includes(s) } },
     ],
   });
-  const route = { data: { section: required } } as unknown as ActivatedRouteSnapshot;
-  return TestBed.runInInjectionContext(() => sectionGuard(route, {} as never)) as boolean | UrlTree;
+  const harness = await RouterTestingHarness.create();
+  await harness.navigateByUrl('/p');
+  return TestBed.inject(Router).url;
 }
 
 describe('sectionGuard', () => {
-  it('allows access when the section is granted', () => {
-    expect(run(['products', 'users'], 'users')).toBe(true);
+  it('allows access when the section is granted', async () => {
+    expect(await urlAfterVisiting(['products', 'users'], 'users')).toBe('/p');
   });
 
-  it('redirects to /unauthorized when not granted', () => {
-    const result = run(['products'], 'profiles');
-    expect(result instanceof UrlTree).toBe(true);
-    expect((result as UrlTree).toString()).toBe('/unauthorized');
+  it('redirects to /unauthorized when not granted', async () => {
+    expect(await urlAfterVisiting(['products'], 'profiles')).toBe('/unauthorized');
   });
 });

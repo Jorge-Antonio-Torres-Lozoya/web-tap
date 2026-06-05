@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { errorInterceptor } from './error.interceptor';
@@ -45,7 +45,7 @@ describe('errorInterceptor', () => {
 
   it('rethrows 422 without navigating', () => {
     let status = 0;
-    http.get('/x').subscribe({ error: (e) => (status = e.status) });
+    http.get('/x').subscribe({ error: (e: HttpErrorResponse) => (status = e.status) });
     mock.expectOne('/x').flush({}, { status: 422, statusText: 'Unprocessable' });
     expect(status).toBe(422);
     expect(router.navigate).not.toHaveBeenCalled();

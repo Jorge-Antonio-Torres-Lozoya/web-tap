@@ -1,0 +1,11 @@
+// CDK overlay glue: our backdrop + container reset. The dialog card itself is
+// styled inside dialog-shell.component (so it stays view-encapsulated).
+
+.tap-backdrop {
+  background: rgba(20, 18, 14, .5);
+  backdrop-filter: blur(2px);
+}
+
+.cdk-dialog-container {
+  outline: none;
+}

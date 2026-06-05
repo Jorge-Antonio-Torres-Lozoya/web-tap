@@ -1,24 +1,35 @@
 import { describe, it, expect } from 'vitest';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, UrlTree } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { authGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
 
-function run(authed: boolean): boolean | UrlTree {
+@Component({ template: '' })
+class BlankComponent {}
+
+async function urlAfterVisitingHome(authenticated: boolean): Promise<string> {
   TestBed.configureTestingModule({
-    providers: [provideRouter([]), { provide: AuthService, useValue: { isAuthenticated: () => authed } }],
+    providers: [
+      provideRouter([
+        { path: 'login', component: BlankComponent },
+        { path: 'home', component: BlankComponent, canActivate: [authGuard] },
+      ]),
+      { provide: AuthService, useValue: { isAuthenticated: () => authenticated } },
+    ],
   });
-  return TestBed.runInInjectionContext(() => authGuard({} as never, {} as never)) as boolean | UrlTree;
+  const harness = await RouterTestingHarness.create();
+  await harness.navigateByUrl('/home');
+  return TestBed.inject(Router).url;
 }
 
 describe('authGuard', () => {
-  it('allows an authenticated user', () => {
-    expect(run(true)).toBe(true);
+  it('allows navigation when authenticated', async () => {
+    expect(await urlAfterVisitingHome(true)).toBe('/home');
   });
 
-  it('redirects to /login otherwise', () => {
-    const result = run(false);
-    expect(result instanceof UrlTree).toBe(true);
-    expect((result as UrlTree).toString()).toBe('/login');
+  it('redirects to /login when not authenticated', async () => {
+    expect(await urlAfterVisitingHome(false)).toBe('/login');
   });
 });

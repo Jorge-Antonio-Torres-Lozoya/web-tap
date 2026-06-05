@@ -64,7 +64,8 @@ export class AuthService {
     const raw = localStorage.getItem(USER_KEY);
     if (!raw) return null;
     try {
-      return JSON.parse(raw) as AuthUser;
+      const user: AuthUser = JSON.parse(raw);
+      return user;
     } catch {
       return null;
     }
