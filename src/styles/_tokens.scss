@@ -1,0 +1,55 @@
+// Design tokens — light paper, black sidebar, brand yellow.
+// Exposed as CSS custom properties for use across components.
+
+:root {
+  // Surfaces
+  --paper:      #F1F1EE; // page background
+  --card:       #FFFFFF;
+  --panel:      #FBFBF9; // subtle header strips
+  --sidebar:    #111114; // black sidebar
+  --sidebar-2:  #1B1B20;
+
+  // Ink (text)
+  --ink:    #1A1A1E;
+  --ink-2:  #4A4A52;
+  --muted:  #7A7A82;
+  --faint:  #A7A7AE;
+
+  // Lines / borders
+  --line:       #E4E4DF;
+  --line-2:     #D8D8D2;
+  --line-dark:  rgba(255, 255, 255, .09);
+
+  // Brand yellow (hi-vis)
+  --hi:       #FFC400;
+  --hi-deep:  #E0A800;
+  --hi-soft:  #FBF4DA;
+  --hi-tint:  #FFF8E0;
+  --on-hi:    #1A1500; // text over yellow
+
+  // Semantic
+  --danger:     #D8442F;
+  --danger-bg:  #FCEDEA;
+  --ok:         #1F9D57;
+
+  // Radii
+  --r-sm: 5px;
+  --r:    8px;
+  --r-lg: 12px;
+
+  // Elevation
+  --sh-card: 0 1px 2px rgba(20, 20, 22, .04), 0 8px 24px -14px rgba(20, 20, 22, .18);
+  --sh-pop:  0 24px 60px -18px rgba(15, 15, 18, .45);
+
+  // Motion
+  --ease:     cubic-bezier(.2, .7, .2, 1);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+
+  // Typography
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+// SCSS-side breakpoints (for media queries inside components)
+$bp-md: 900px;
+$bp-sm: 640px;

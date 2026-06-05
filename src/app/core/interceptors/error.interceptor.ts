@@ -1,0 +1,22 @@
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+import { AuthService } from '../services/auth.service';
+
+// 401 -> login, 403 -> unauthorized. 422 is rethrown so forms can map field errors.
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
+  const auth = inject(AuthService);
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        auth.clearSession();
+        router.navigate(['/login']);
+      } else if (error.status === 403) {
+        router.navigate(['/unauthorized']);
+      }
+      return throwError(() => error);
+    }),
+  );
+};
