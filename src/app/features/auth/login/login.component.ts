@@ -13,7 +13,7 @@ import { FieldErrorComponent } from '@shared/ui/field-error/field-error.componen
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, AuthCardComponent, FieldErrorComponent],
   template: `
-    <app-auth-card title="Iniciar sesión" subtitle="TAP · CLJ Terminal Portuaria">
+    <app-auth-card heading="Iniciar sesión" subtitle="TAP · CLJ Terminal Portuaria">
       <form [formGroup]="form" (ngSubmit)="submit()">
         @if (formError()) {
           <div class="form-alert mb-2" role="alert">
@@ -64,8 +64,6 @@ import { FieldErrorComponent } from '@shared/ui/field-error/field-error.componen
           }
         </button>
       </form>
-
-      <span authFooter class="link-muted">Soporte</span>
     </app-auth-card>
   `,
 })

@@ -34,7 +34,7 @@
 
 .authcard {
   width: 100%;
-  max-width: 412px;
+  max-width: 460px;
   background: var(--card);
   border-radius: var(--r-lg);
   box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .6);
@@ -76,7 +76,7 @@
 }
 
 .authbanner__tx {
-  b { color: #fff; font-size: 13px; letter-spacing: .02em; display: block; }
+  b { color: #fff; font-size: 14px; letter-spacing: .02em; display: block; }
   small {
     font-family: var(--mono);
     font-size: 9.5px;

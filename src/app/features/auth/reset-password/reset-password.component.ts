@@ -16,7 +16,7 @@ const HAS_LETTER_AND_NUMBER = /^(?=.*[A-Za-z])(?=.*\d).+$/;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, AuthCardComponent, FieldErrorComponent],
   template: `
-    <app-auth-card title="Restablecer contraseña" subtitle="Define tu nueva contraseña">
+    <app-auth-card heading="Restablecer contraseña" subtitle="Define tu nueva contraseña">
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="field">
           <label class="field-label" for="password">Nueva contraseña</label>

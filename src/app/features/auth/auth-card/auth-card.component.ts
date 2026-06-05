@@ -27,7 +27,7 @@ import { LogoMarkComponent } from '@shared/ui/logo-mark/logo-mark.component';
             <div class="authbanner__bar"></div>
           </div>
 
-          <h1>{{ title() }}</h1>
+          <h1>{{ heading() }}</h1>
           <div class="sub">{{ subtitle() }}</div>
 
           <ng-content />
@@ -43,6 +43,6 @@ import { LogoMarkComponent } from '@shared/ui/logo-mark/logo-mark.component';
   styleUrl: './auth-card.component.scss',
 })
 export class AuthCardComponent {
-  readonly title = input('');
+  readonly heading = input('');
   readonly subtitle = input('');
 }

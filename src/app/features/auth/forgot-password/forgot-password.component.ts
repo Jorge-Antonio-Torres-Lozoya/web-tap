@@ -13,7 +13,7 @@ import { FieldErrorComponent } from '@shared/ui/field-error/field-error.componen
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule, RouterLink, AuthCardComponent, FieldErrorComponent],
   template: `
-    <app-auth-card title="Recuperar contraseña" subtitle="Te enviaremos un enlace por correo">
+    <app-auth-card heading="Recuperar contraseña" subtitle="Te enviaremos un enlace por correo">
       @if (sent()) {
         <div class="notice">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
