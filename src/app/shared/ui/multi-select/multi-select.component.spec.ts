@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MultiSelectComponent } from './multi-select.component';
 
 describe('MultiSelectComponent', () => {
+  let fixture: ComponentFixture<MultiSelectComponent>;
   let comp: MultiSelectComponent;
   let emitted: string[][];
 
   beforeEach(() => {
-    const fixture = TestBed.createComponent(MultiSelectComponent);
+    fixture = TestBed.createComponent(MultiSelectComponent);
     comp = fixture.componentInstance;
     fixture.componentRef.setInput('options', [
       { value: 'a', label: 'A' },
@@ -29,5 +30,15 @@ describe('MultiSelectComponent', () => {
     expect(emitted.at(-1)).toEqual(['a', 'b']);
     comp.toggle('a');
     expect(emitted.at(-1)).toEqual(['b']);
+  });
+
+  it('does not toggle a locked (disabled) option', () => {
+    fixture.componentRef.setInput('options', [
+      { value: 'profiles', label: 'Perfiles' },
+      { value: 'users', label: 'Usuarios', disabled: true },
+    ]);
+    comp.toggle('users');
+    expect(comp.isSelected('users')).toBe(false);
+    expect(emitted.length).toBe(0);
   });
 });

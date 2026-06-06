@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { UserDetail } from '@core/models';
@@ -15,8 +15,8 @@ export interface UserDetailData {
   template: `
     <app-dialog-shell eyebrow="/ detalle de usuario" [heading]="data.user.name" (close)="ref.close()">
       <div class="detail-id">
-        @if (data.user.profile_photo) {
-          <img [src]="data.user.profile_photo" [alt]="data.user.name" />
+        @if (data.user.profile_photo && !photoError()) {
+          <img [src]="data.user.profile_photo" [alt]="data.user.name" (error)="photoError.set(true)" />
         } @else {
           <div class="detail-id__avatar">{{ data.user.name.charAt(0) }}</div>
         }
@@ -65,4 +65,5 @@ export interface UserDetailData {
 export class UserDetailComponent {
   readonly data = inject<UserDetailData>(DIALOG_DATA);
   readonly ref = inject<DialogRef<'edit'>>(DialogRef);
+  readonly photoError = signal(false);
 }

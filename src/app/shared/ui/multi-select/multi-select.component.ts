@@ -5,6 +5,9 @@ export interface MultiOption {
   value: string;
   label: string;
   sublabel?: string;
+  // Locked options keep their current state and cannot be toggled (e.g. a
+  // section the current user can't grant). Prevents privilege escalation in the UI.
+  disabled?: boolean;
 }
 
 @Component({
@@ -16,12 +19,17 @@ export interface MultiOption {
   template: `
     <div class="ms">
       @for (opt of options(); track opt.value) {
-        <label class="opt" [class.sel]="isSelected(opt.value)">
+        <label
+          class="opt"
+          [class.sel]="isSelected(opt.value)"
+          [class.opt--locked]="opt.disabled"
+          [attr.title]="opt.disabled ? lockedTitle() : null"
+        >
           <input
             type="checkbox"
             class="sr-only"
             [checked]="isSelected(opt.value)"
-            [disabled]="disabled()"
+            [disabled]="disabled() || !!opt.disabled"
             (change)="toggle(opt.value)"
           />
           <span class="box">
@@ -35,6 +43,13 @@ export interface MultiOption {
               <small>{{ opt.sublabel }}</small>
             }
           </span>
+          @if (opt.disabled) {
+            <span class="opt__lock">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" />
+              </svg>
+            </span>
+          }
         </label>
       }
     </div>
@@ -42,6 +57,8 @@ export interface MultiOption {
 })
 export class MultiSelectComponent implements ControlValueAccessor {
   readonly options = input.required<MultiOption[]>();
+  // Tooltip shown when hovering a locked option.
+  readonly lockedTitle = input('');
 
   protected readonly disabled = signal(false);
   private readonly selected = signal<string[]>([]);
@@ -54,7 +71,9 @@ export class MultiSelectComponent implements ControlValueAccessor {
   }
 
   toggle(value: string): void {
-    if (this.disabled()) return;
+    const option = this.options().find((opt) => opt.value === value);
+    if (this.disabled() || option?.disabled) return;
+
     const next = this.isSelected(value)
       ? this.selected().filter((v) => v !== value)
       : [...this.selected(), value];

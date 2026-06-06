@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { AuthService } from '@core/services/auth.service';
 import { ProfilesService } from '@core/services/profiles.service';
 import { SectionsService } from '@core/services/sections.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
@@ -27,6 +28,13 @@ export interface ProfileFormData {
       (close)="ref.close()"
     >
       <form class="form" [formGroup]="form" (ngSubmit)="save()">
+        @if (formError()) {
+          <div class="form-alert mb-2" role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v5M12 16h.01" /></svg>
+            <span>{{ formError() }}</span>
+          </div>
+        }
+
         @if (data.profile; as profile) {
           <div class="field">
             <label class="flab">Código</label>
@@ -45,9 +53,18 @@ export interface ProfileFormData {
           @if (sectionsLoading()) {
             <div class="state-block" style="padding:14px">Cargando secciones…</div>
           } @else {
-            <app-multi-select formControlName="sections" [options]="sectionOptions()" />
+            <app-multi-select
+              formControlName="sections"
+              [options]="sectionOptions()"
+              lockedTitle="No puedes otorgar una sección que no tienes."
+            />
           }
-          <div class="hint">Selecciona al menos una sección.</div>
+          <div class="hint">
+            Selecciona al menos una sección.
+            @if (hasLockedSections()) {
+              Las secciones bloqueadas requieren que tú las tengas asignadas.
+            }
+          </div>
           <app-field-error [control]="form.controls.sections" [serverErrors]="serverErrors()['sections']" />
         </div>
       </form>
@@ -64,6 +81,7 @@ export class ProfileFormComponent implements OnInit {
   readonly ref = inject<DialogRef<boolean>>(DialogRef);
 
   private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
   private readonly profiles = inject(ProfilesService);
   private readonly sections = inject(SectionsService);
   private readonly toast = inject(ToastService);
@@ -71,8 +89,10 @@ export class ProfileFormComponent implements OnInit {
   readonly isCreate = this.data.mode === 'create';
   readonly submitting = signal(false);
   readonly serverErrors = signal<Record<string, string[]>>({});
+  readonly formError = signal<string | null>(null);
   readonly sectionOptions = signal<MultiOption[]>([]);
   readonly sectionsLoading = signal(true);
+  readonly hasLockedSections = computed(() => this.sectionOptions().some((opt) => opt.disabled));
 
   // Profiles return sections as objects; the form works with slugs.
   readonly form = this.fb.group({
@@ -86,8 +106,14 @@ export class ProfileFormComponent implements OnInit {
   ngOnInit(): void {
     this.sections.list().subscribe({
       next: (sections) => {
+        // Lock sections the current user doesn't have → can't grant privileges they lack.
         this.sectionOptions.set(
-          sections.map((section) => ({ value: section.slug, label: section.name, sublabel: section.code })),
+          sections.map((section) => ({
+            value: section.slug,
+            label: section.name,
+            sublabel: section.code,
+            disabled: !this.auth.hasSection(section.slug),
+          })),
         );
         this.sectionsLoading.set(false);
       },
@@ -108,6 +134,7 @@ export class ProfileFormComponent implements OnInit {
 
     this.submitting.set(true);
     this.serverErrors.set({});
+    this.formError.set(null);
 
     const profile = this.data.profile;
     const request = !this.isCreate && profile ? this.profiles.update(profile.id, payload) : this.profiles.create(payload);
@@ -123,8 +150,8 @@ export class ProfileFormComponent implements OnInit {
         if (failure && Object.keys(failure.fields).length) {
           this.serverErrors.set(failure.fields);
         } else {
-          // Business-rule rejection (e.g. last-admin protection) → show its message.
-          this.toast.error(apiMessage(error) ?? 'No se pudo guardar el perfil.');
+          // Business-rule rejection (e.g. last-admin protection) → show it inside the modal.
+          this.formError.set(apiMessage(error) ?? 'No se pudo guardar el perfil.');
         }
       },
     });

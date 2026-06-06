@@ -20,8 +20,8 @@ const MAX_BYTES = 2 * 1024 * 1024; // 2 MB
   ],
   template: `
     <div class="dropzone" (click)="fileInput.click()" role="button" tabindex="0" (keydown.enter)="fileInput.click()">
-      @if (displayUrl()) {
-        <img class="dz-preview" [src]="displayUrl()" alt="Vista previa" />
+      @if (displayUrl(); as url) {
+        <img class="dz-preview" [src]="url" alt="Vista previa" (error)="onPreviewError()" />
         <div><b>Cambiar imagen</b></div>
       } @else {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -45,8 +45,16 @@ export class ImageDropzoneComponent implements ControlValueAccessor {
   protected readonly disabled = signal(false);
   protected readonly localError = signal<string | null>(null);
   private readonly objectUrl = signal<string | null>(null);
+  private readonly previewError = signal(false);
 
-  protected readonly displayUrl = computed(() => this.objectUrl() ?? this.previewUrl());
+  // A freshly picked file (objectUrl) always wins; a broken existing photo falls back to the placeholder.
+  protected readonly displayUrl = computed(
+    () => this.objectUrl() ?? (this.previewError() ? null : this.previewUrl()),
+  );
+
+  protected onPreviewError(): void {
+    this.previewError.set(true);
+  }
 
   private onChange: (value: File | null) => void = () => {};
   private onTouched: () => void = () => {};

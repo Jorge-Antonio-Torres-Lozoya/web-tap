@@ -62,6 +62,7 @@ export class UserFormComponent implements OnInit {
   readonly canManageProfiles = this.auth.hasSection('profiles');
   readonly submitting = signal(false);
   readonly serverErrors = signal<Record<string, string[]>>({});
+  readonly formError = signal<string | null>(null);
   readonly profileOptions = signal<MultiOption[]>([]);
   readonly profilesLoading = signal(true);
 
@@ -112,6 +113,7 @@ export class UserFormComponent implements OnInit {
     }
     this.submitting.set(true);
     this.serverErrors.set({});
+    this.formError.set(null);
 
     const formData = buildUserFormData(this.form.getRawValue(), this.data.mode);
     const user = this.data.user;
@@ -128,8 +130,8 @@ export class UserFormComponent implements OnInit {
         if (failure && Object.keys(failure.fields).length) {
           this.serverErrors.set(failure.fields);
         } else {
-          // Business-rule rejection (e.g. last-admin protection) → show its message.
-          this.toast.error(apiMessage(error) ?? 'No se pudo guardar el usuario.');
+          // Business-rule rejection (e.g. last-admin protection) → show it inside the modal.
+          this.formError.set(apiMessage(error) ?? 'No se pudo guardar el usuario.');
         }
       },
     });
