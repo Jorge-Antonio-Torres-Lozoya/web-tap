@@ -14,11 +14,18 @@ import { AuthService } from '@core/services/auth.service';
           </svg>
         </div>
         <h1>Sin acceso</h1>
-        <p>No tienes permisos para acceder a esta sección. Contacta a un administrador si crees que es un error.</p>
-        <div class="ua__actions">
-          <button type="button" class="btn btn--ghost" (click)="logout()">Cerrar sesión</button>
-          <button type="button" class="btn btn--dark" (click)="home()">Ir al inicio</button>
-        </div>
+        @if (hasSections) {
+          <p>No tienes permisos para acceder a esta sección. Contacta a un administrador si crees que es un error.</p>
+          <div class="ua__actions">
+            <button type="button" class="btn btn--ghost" (click)="logout()">Cerrar sesión</button>
+            <button type="button" class="btn btn--dark" (click)="home()">Ir al inicio</button>
+          </div>
+        } @else {
+          <p>Tu cuenta no tiene ninguna sección asignada. Pide a un administrador que te asigne un perfil con acceso para poder usar el sistema.</p>
+          <div class="ua__actions">
+            <button type="button" class="btn btn--dark" (click)="logout()">Cerrar sesión</button>
+          </div>
+        }
       </div>
     </div>
   `,
@@ -27,6 +34,9 @@ import { AuthService } from '@core/services/auth.service';
 export class UnauthorizedComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+
+  // No sections at all → "Ir al inicio" would loop back here, so we hide it.
+  readonly hasSections = this.auth.sections().length > 0;
 
   home(): void {
     this.router.navigateByUrl('/');
