@@ -32,6 +32,14 @@
   .dim { color: rgba(255, 255, 255, .4); }
 }
 
+// Decorative corner labels overlap the card on small screens — hide them.
+@media (max-width: 640px) {
+  .auth__status,
+  .auth__brandmark {
+    display: none;
+  }
+}
+
 .authcard {
   width: 100%;
   max-width: 460px;
