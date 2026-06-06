@@ -5,7 +5,7 @@ import { ProductsService } from '@core/services/products.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
 import { ConfirmService } from '@shared/ui/confirm/confirm.service';
 import { saveBlob } from '@core/utils/download-file.util';
-import { Product, PaginationMeta } from '@core/models';
+import { Product, PaginationMeta, FIRST_PAGE } from '@core/models';
 import { PaginatorComponent } from '@shared/ui/paginator/paginator.component';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ProductDetailComponent } from '../product-detail/product-detail.component';
@@ -28,10 +28,10 @@ export class ProductsListComponent implements OnInit {
   readonly error = signal(false);
 
   ngOnInit(): void {
-    this.load(1);
+    this.load();
   }
 
-  load(page: number): void {
+  load(page = FIRST_PAGE): void {
     this.loading.set(true);
     this.error.set(false);
     this.products.list(page).subscribe({
@@ -74,7 +74,8 @@ export class ProductsListComponent implements OnInit {
   async remove(product: Product): Promise<void> {
     const confirmed = await this.confirm.confirm({
       title: 'Eliminar producto',
-      message: `¿Eliminar ${product.code} — ${product.name}? Esta acción no se puede deshacer.`,
+      highlight: `${product.code} — ${product.name}`,
+      message: 'Esta acción no se puede deshacer.',
       confirmText: 'Eliminar',
       danger: true,
     });
@@ -113,6 +114,6 @@ export class ProductsListComponent implements OnInit {
 
   // Reload the current page after a mutation.
   private reload(): void {
-    this.load(this.meta()?.current_page ?? 1);
+    this.load(this.meta()?.current_page ?? FIRST_PAGE);
   }
 }

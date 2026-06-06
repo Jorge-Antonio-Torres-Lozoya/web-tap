@@ -59,6 +59,7 @@ export class UserFormComponent implements OnInit {
   readonly submitting = signal(false);
   readonly serverErrors = signal<Record<string, string[]>>({});
   readonly profileOptions = signal<MultiOption[]>([]);
+  readonly profilesLoading = signal(true);
 
   readonly form = this.fb.group(
     {
@@ -83,11 +84,16 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.profiles.list(1).subscribe({
-      next: (result) =>
+      next: (result) => {
         this.profileOptions.set(
           result.items.map((profile) => ({ value: profile.id, label: profile.name, sublabel: profile.code })),
-        ),
-      error: () => this.toast.error('No se pudieron cargar los perfiles.'),
+        );
+        this.profilesLoading.set(false);
+      },
+      error: () => {
+        this.profilesLoading.set(false);
+        this.toast.error('No se pudieron cargar los perfiles.');
+      },
     });
   }
 

@@ -5,6 +5,8 @@ import { DialogShellComponent } from '../dialog/dialog-shell.component';
 export interface ConfirmData {
   title: string;
   message: string;
+  // Optional entity shown in bold (e.g. "PRD-0003 — Grúa hidráulica").
+  highlight?: string;
   confirmText?: string;
   danger?: boolean;
 }
@@ -15,7 +17,13 @@ export interface ConfirmData {
   imports: [DialogShellComponent],
   template: `
     <app-dialog-shell eyebrow="/ confirmar" [heading]="data.title" (close)="ref.close(false)">
-      <p>{{ data.message }}</p>
+      <p class="confirm-text">
+        @if (data.highlight) {
+          <strong>{{ data.highlight }}</strong>
+        }
+        <span>{{ data.message }}</span>
+      </p>
+
       <button dialogFooter type="button" class="btn btn--ghost" style="flex:1" (click)="ref.close(false)">Cancelar</button>
       <button
         dialogFooter
@@ -29,6 +37,11 @@ export interface ConfirmData {
         {{ data.confirmText ?? 'Confirmar' }}
       </button>
     </app-dialog-shell>
+  `,
+  styles: `
+    .confirm-text { font-size: 14px; line-height: 1.55; }
+    .confirm-text strong { display: block; margin-bottom: 6px; color: var(--ink); }
+    .confirm-text span { color: var(--ink-2); }
   `,
 })
 export class ConfirmDialogComponent {

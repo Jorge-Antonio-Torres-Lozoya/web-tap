@@ -5,7 +5,7 @@ import { UsersService } from '@core/services/users.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
 import { ConfirmService } from '@shared/ui/confirm/confirm.service';
 import { saveBlob } from '@core/utils/download-file.util';
-import { UserDetail, UserListItem, PaginationMeta } from '@core/models';
+import { UserDetail, UserListItem, PaginationMeta, FIRST_PAGE } from '@core/models';
 import { PaginatorComponent } from '@shared/ui/paginator/paginator.component';
 import { UserFormComponent } from '../user-form/user-form.component';
 import { UserDetailComponent } from '../user-detail/user-detail.component';
@@ -28,10 +28,10 @@ export class UsersListComponent implements OnInit {
   readonly error = signal(false);
 
   ngOnInit(): void {
-    this.load(1);
+    this.load();
   }
 
-  load(page: number): void {
+  load(page = FIRST_PAGE): void {
     this.loading.set(true);
     this.error.set(false);
     this.users.list(page).subscribe({
@@ -78,7 +78,8 @@ export class UsersListComponent implements OnInit {
   async remove(item: UserListItem): Promise<void> {
     const confirmed = await this.confirm.confirm({
       title: 'Eliminar usuario',
-      message: `¿Eliminar ${item.code} — ${item.name}? Esta acción no se puede deshacer.`,
+      highlight: `${item.code} — ${item.name}`,
+      message: 'Esta acción no se puede deshacer.',
       confirmText: 'Eliminar',
       danger: true,
     });
@@ -124,6 +125,6 @@ export class UsersListComponent implements OnInit {
   }
 
   private reload(): void {
-    this.load(this.meta()?.current_page ?? 1);
+    this.load(this.meta()?.current_page ?? FIRST_PAGE);
   }
 }

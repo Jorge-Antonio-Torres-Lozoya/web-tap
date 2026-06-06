@@ -6,6 +6,8 @@ export interface ApiResponse<T> {
   message: string | null;
 }
 
+export const FIRST_PAGE = 1;
+
 export interface PaginationMeta {
   current_page: number;
   last_page: number;

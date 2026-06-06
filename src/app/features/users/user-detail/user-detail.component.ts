@@ -21,8 +21,7 @@ export interface UserDetailData {
           <div class="detail-id__avatar">{{ data.user.name.charAt(0) }}</div>
         }
         <div class="n">
-          <b>{{ data.user.name }}</b>
-          <small>{{ data.user.code }}</small>
+          <b class="mono">{{ data.user.code }}</b>
         </div>
       </div>
 
@@ -60,8 +59,7 @@ export interface UserDetailData {
     .detail-id img,
     .detail-id__avatar { width: 58px; height: 58px; border-radius: 8px; object-fit: cover; border: 1px solid var(--line); }
     .detail-id__avatar { display: grid; place-items: center; background: var(--hi); color: var(--on-hi); font-weight: 700; font-size: 24px; }
-    .detail-id .n b { font-size: 17px; display: block; }
-    .detail-id .n small { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    .detail-id .n b { font-size: 15px; color: var(--ink-2); }
   `,
 })
 export class UserDetailComponent {

@@ -31,7 +31,7 @@
   } @else if (error()) {
     <div class="state-block">
       <span>No se pudieron cargar los usuarios.</span>
-      <button class="btn btn--ghost btn--sm" type="button" (click)="load(1)">Reintentar</button>
+      <button class="btn btn--ghost btn--sm" type="button" (click)="load()">Reintentar</button>
     </div>
   } @else if (items().length === 0) {
     <div class="state-block">No hay usuarios registrados.</div>

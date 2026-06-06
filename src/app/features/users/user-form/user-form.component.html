@@ -61,7 +61,11 @@
 
     <div class="field">
       <label class="flab">Perfiles <span class="req">*</span></label>
-      <app-multi-select formControlName="profileIds" [options]="profileOptions()" />
+      @if (profilesLoading()) {
+        <div class="state-block" style="padding:14px">Cargando perfiles…</div>
+      } @else {
+        <app-multi-select formControlName="profileIds" [options]="profileOptions()" />
+      }
       <div class="hint">Selecciona al menos un perfil.</div>
       <app-field-error [control]="form.controls.profileIds" [serverErrors]="serverErrors()['profile_ids']" />
     </div>
