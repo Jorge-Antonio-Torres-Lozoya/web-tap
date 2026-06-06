@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  flex-wrap: wrap;
   padding: 14px 18px;
   background: var(--panel);
   border-bottom: 1px solid var(--line);
@@ -100,9 +101,15 @@
   svg { width: 15px; height: 15px; }
 }
 
+// Horizontal scroll on narrow screens so all columns (incl. actions) stay reachable.
+.table-scroll {
+  overflow-x: auto;
+}
+
 // Table
 table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
 }
 

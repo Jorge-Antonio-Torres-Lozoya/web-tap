@@ -5,6 +5,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideRouter, Router } from '@angular/router';
 import { errorInterceptor } from './error.interceptor';
 import { AuthService } from '../services/auth.service';
+import { ToastService } from '@shared/ui/toast/toast.service';
 
 describe('errorInterceptor', () => {
   let http: HttpClient;
@@ -34,6 +35,15 @@ describe('errorInterceptor', () => {
     http.get('/x').subscribe({ error: () => {} });
     mock.expectOne('/x').flush({}, { status: 401, statusText: 'Unauthorized' });
     expect(clear).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('warns the user on 401 while authenticated', () => {
+    const toast = vi.spyOn(TestBed.inject(ToastService), 'error');
+    vi.spyOn(auth, 'isAuthenticated').mockReturnValue(true);
+    http.get('/x').subscribe({ error: () => {} });
+    mock.expectOne('/x').flush({}, { status: 401, statusText: 'Unauthorized' });
+    expect(toast).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 

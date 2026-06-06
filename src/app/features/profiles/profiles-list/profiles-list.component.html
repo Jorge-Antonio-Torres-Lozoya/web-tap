@@ -46,6 +46,7 @@
       }
     </div>
   } @else {
+    <div class="table-scroll">
     <table>
       <thead>
         <tr>
@@ -78,6 +79,7 @@
         }
       </tbody>
     </table>
+    </div>
 
     @if (meta(); as m) {
       <app-paginator [meta]="m" [shownCount]="items().length" (pageChange)="load($event)" />

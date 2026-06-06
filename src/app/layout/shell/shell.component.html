@@ -1,4 +1,4 @@
-<aside class="sidebar">
+<aside class="sidebar" [class.sidebar--open]="menuOpen()">
   <div class="sb-brand">
     <div class="sb-brand__lg"><app-logo-mark /></div>
     <div>
@@ -10,7 +10,7 @@
   <div class="sb-sec"><span class="eyebrow">Secciones</span></div>
   <nav class="sb-nav">
     @for (item of nav(); track item.slug) {
-      <a class="sb-item" [routerLink]="item.path" routerLinkActive="active">
+      <a class="sb-item" [routerLink]="item.path" routerLinkActive="active" (click)="closeMenu()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
           @switch (item.slug) {
             @case ('products') {
@@ -47,15 +47,17 @@
   </div>
 </aside>
 
+<div class="shell-backdrop" [class.show]="menuOpen()" (click)="closeMenu()"></div>
+
 <div class="main-wrap">
   <header class="topbar">
-    <div class="tt">Port Terminal Admin <span>· {{ currentLabel() }}</span></div>
-    <div class="topbar__sp"></div>
-    <button class="iconbtn-top" type="button" title="Notificaciones" (click)="notifications()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.7 21a2 2 0 0 1-3.4 0" />
+    <button class="iconbtn-top hamburger" type="button" (click)="toggleMenu()" aria-label="Abrir menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 6h18M3 12h18M3 18h18" />
       </svg>
     </button>
+    <div class="tt">Port Terminal Admin <span>· {{ currentLabel() }}</span></div>
+    <div class="topbar__sp"></div>
     <button class="iconbtn-top" type="button" title="Cerrar sesión" (click)="logout()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
