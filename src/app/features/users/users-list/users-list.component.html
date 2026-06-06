@@ -3,10 +3,12 @@
     <h2>Gestión de Usuarios</h2>
     <p>Administración de personal y accesos al sistema.</p>
   </div>
-  <button class="btn btn--hi btn--uc" type="button" (click)="openCreate()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
-    Nuevo usuario
-  </button>
+  @if (canCreate) {
+    <button class="btn btn--hi btn--uc" type="button" (click)="openCreate()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
+      Nuevo usuario
+    </button>
+  }
 </div>
 
 <div class="tablecard">

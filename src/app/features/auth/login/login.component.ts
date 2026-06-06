@@ -30,8 +30,8 @@ import { FieldErrorComponent } from '@shared/ui/field-error/field-error.componen
             </label>
           </div>
           <div class="inp-wrap">
-            <input id="username" class="inp" type="email" formControlName="username" placeholder="admin@tapterminal.com" autocomplete="username" />
-          </div>
+            <input id="username" class="inp" type="email" formControlName="username" placeholder="user@tapterminal.com" autocomplete="username" />
+          </div>encontr
           <app-field-error [control]="form.controls.username" />
         </div>
 

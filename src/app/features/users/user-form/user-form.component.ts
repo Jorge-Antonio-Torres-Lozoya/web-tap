@@ -8,10 +8,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { AuthService } from '@core/services/auth.service';
 import { UsersService } from '@core/services/users.service';
 import { ProfilesService } from '@core/services/profiles.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
-import { parseValidationError } from '@core/utils/validation-error.util';
+import { apiMessage, parseValidationError } from '@core/utils/validation-error.util';
 import { passwordMatch } from '@core/utils/password-match.validator';
 import { PASSWORD_PATTERN } from '@core/utils/password.util';
 import { UserDetail } from '@core/models';
@@ -51,11 +52,14 @@ export class UserFormComponent implements OnInit {
   readonly ref = inject<DialogRef<boolean>>(DialogRef);
 
   private readonly fb = inject(FormBuilder);
+  private readonly auth = inject(AuthService);
   private readonly users = inject(UsersService);
   private readonly profiles = inject(ProfilesService);
   private readonly toast = inject(ToastService);
 
   readonly isCreate = this.data.mode === 'create';
+  // Assigning profiles requires reading the catalog (GET /profiles → 'profiles' section).
+  readonly canManageProfiles = this.auth.hasSection('profiles');
   readonly submitting = signal(false);
   readonly serverErrors = signal<Record<string, string[]>>({});
   readonly profileOptions = signal<MultiOption[]>([]);
@@ -83,6 +87,10 @@ export class UserFormComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    if (!this.canManageProfiles) {
+      this.profilesLoading.set(false);
+      return;
+    }
     this.profiles.list(1).subscribe({
       next: (result) => {
         this.profileOptions.set(
@@ -117,8 +125,12 @@ export class UserFormComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         const failure = parseValidationError(error);
-        if (failure) this.serverErrors.set(failure.fields);
-        else this.toast.error('No se pudo guardar el usuario.');
+        if (failure && Object.keys(failure.fields).length) {
+          this.serverErrors.set(failure.fields);
+        } else {
+          // Business-rule rejection (e.g. last-admin protection) → show its message.
+          this.toast.error(apiMessage(error) ?? 'No se pudo guardar el usuario.');
+        }
       },
     });
   }

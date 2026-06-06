@@ -5,7 +5,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ProfilesService } from '@core/services/profiles.service';
 import { SectionsService } from '@core/services/sections.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
-import { parseValidationError } from '@core/utils/validation-error.util';
+import { apiMessage, parseValidationError } from '@core/utils/validation-error.util';
 import { Profile, ProfilePayload, isSectionSlug } from '@core/models';
 import { DialogShellComponent } from '@shared/ui/dialog/dialog-shell.component';
 import { FieldErrorComponent } from '@shared/ui/field-error/field-error.component';
@@ -120,8 +120,12 @@ export class ProfileFormComponent implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.submitting.set(false);
         const failure = parseValidationError(error);
-        if (failure) this.serverErrors.set(failure.fields);
-        else this.toast.error('No se pudo guardar el perfil.');
+        if (failure && Object.keys(failure.fields).length) {
+          this.serverErrors.set(failure.fields);
+        } else {
+          // Business-rule rejection (e.g. last-admin protection) → show its message.
+          this.toast.error(apiMessage(error) ?? 'No se pudo guardar el perfil.');
+        }
       },
     });
   }

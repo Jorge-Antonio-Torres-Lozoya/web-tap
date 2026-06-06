@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Dialog } from '@angular/cdk/dialog';
 import { ProfilesService } from '@core/services/profiles.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
 import { ConfirmService } from '@shared/ui/confirm/confirm.service';
 import { saveBlob } from '@core/utils/download-file.util';
+import { apiMessage } from '@core/utils/validation-error.util';
 import { Profile, PaginationMeta, FIRST_PAGE } from '@core/models';
 import { PaginatorComponent } from '@shared/ui/paginator/paginator.component';
 import { ProfileFormComponent } from '../profile-form/profile-form.component';
@@ -86,7 +88,7 @@ export class ProfilesListComponent implements OnInit {
         this.toast.success('Perfil eliminado.');
         this.reload();
       },
-      error: () => this.toast.error('No se pudo eliminar el perfil.'),
+      error: (error: HttpErrorResponse) => this.toast.error(apiMessage(error) ?? 'No se pudo eliminar el perfil.'),
     });
   }
 

@@ -9,6 +9,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
+// Reads the human-readable `message` from any API error body, if present.
+export function apiMessage(error: HttpErrorResponse): string | null {
+  const body: unknown = error.error;
+  return isRecord(body) && typeof body['message'] === 'string' ? body['message'] : null;
+}
+
 // Parses a Laravel 422 response into a general message + per-field messages.
 // Returns null for non-422 errors so callers can fall back to a generic message.
 export function parseValidationError(error: HttpErrorResponse): ValidationFailure | null {

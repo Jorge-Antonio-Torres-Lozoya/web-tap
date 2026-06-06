@@ -44,30 +44,43 @@
       <div class="field-error" style="margin-top:-8px"><span>El código de país es obligatorio (formato +52).</span></div>
     }
 
-    <div class="field">
-      <label class="flab" for="password">Contraseña @if (isCreate) { <span class="req">*</span> }</label>
-      <input id="password" class="inp" type="password" formControlName="password" autocomplete="new-password" placeholder="••••••••" />
-      <div class="hint">{{ isCreate ? 'Mín. 8 caracteres, con letras y números.' : 'Déjala en blanco para no cambiarla.' }}</div>
-      <app-field-error [control]="form.controls.password" [serverErrors]="serverErrors()['password']" />
-    </div>
+    @if (isCreate) {
+      <div class="field">
+        <label class="flab" for="password">Contraseña <span class="req">*</span></label>
+        <input id="password" class="inp" type="password" formControlName="password" autocomplete="new-password" placeholder="••••••••" />
+        <div class="hint">Mín. 8 caracteres, con letras y números.</div>
+        <app-field-error [control]="form.controls.password" [serverErrors]="serverErrors()['password']" />
+      </div>
 
-    <div class="field">
-      <label class="flab" for="passwordConfirmation">Confirmar contraseña</label>
-      <input id="passwordConfirmation" class="inp" type="password" formControlName="passwordConfirmation" autocomplete="new-password" placeholder="••••••••" />
-      @if (form.hasError('passwordMismatch') && form.controls.passwordConfirmation.touched) {
-        <div class="field-error"><span>Las contraseñas no coinciden.</span></div>
-      }
-    </div>
+      <div class="field">
+        <label class="flab" for="passwordConfirmation">Confirmar contraseña</label>
+        <input id="passwordConfirmation" class="inp" type="password" formControlName="passwordConfirmation" autocomplete="new-password" placeholder="••••••••" />
+        @if (form.hasError('passwordMismatch') && form.controls.passwordConfirmation.touched) {
+          <div class="field-error"><span>Las contraseñas no coinciden.</span></div>
+        }
+      </div>
+    }
 
     <div class="field">
       <label class="flab">Perfiles <span class="req">*</span></label>
-      @if (profilesLoading()) {
-        <div class="state-block" style="padding:14px">Cargando perfiles…</div>
+      @if (canManageProfiles) {
+        @if (profilesLoading()) {
+          <div class="state-block" style="padding:14px">Cargando perfiles…</div>
+        } @else {
+          <app-multi-select formControlName="profileIds" [options]="profileOptions()" />
+        }
+        <div class="hint">Selecciona al menos un perfil.</div>
+        <app-field-error [control]="form.controls.profileIds" [serverErrors]="serverErrors()['profile_ids']" />
       } @else {
-        <app-multi-select formControlName="profileIds" [options]="profileOptions()" />
+        @if (data.user; as user) {
+          <div class="taglist" style="justify-content:flex-start">
+            @for (profile of user.profiles; track profile.id) {
+              <span class="tag hi">{{ profile.name }}</span>
+            }
+          </div>
+        }
+        <div class="hint">Requiere acceso a la sección Perfiles para modificarlos.</div>
       }
-      <div class="hint">Selecciona al menos un perfil.</div>
-      <app-field-error [control]="form.controls.profileIds" [serverErrors]="serverErrors()['profile_ids']" />
     </div>
   </form>
 

@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Dialog } from '@angular/cdk/dialog';
+import { AuthService } from '@core/services/auth.service';
 import { UsersService } from '@core/services/users.service';
 import { ToastService } from '@shared/ui/toast/toast.service';
 import { ConfirmService } from '@shared/ui/confirm/confirm.service';
 import { saveBlob } from '@core/utils/download-file.util';
+import { apiMessage } from '@core/utils/validation-error.util';
 import { UserDetail, UserListItem, PaginationMeta, FIRST_PAGE } from '@core/models';
 import { PaginatorComponent } from '@shared/ui/paginator/paginator.component';
 import { UserFormComponent } from '../user-form/user-form.component';
@@ -18,10 +21,13 @@ import { UserDetailComponent } from '../user-detail/user-detail.component';
 })
 export class UsersListComponent implements OnInit {
   private readonly users = inject(UsersService);
+  private readonly auth = inject(AuthService);
   private readonly dialog = inject(Dialog);
   private readonly confirm = inject(ConfirmService);
   private readonly toast = inject(ToastService);
 
+  // Creating a user requires assigning a profile, which needs the 'profiles' section.
+  readonly canCreate = this.auth.hasSection('profiles');
   readonly items = signal<UserListItem[]>([]);
   readonly meta = signal<PaginationMeta | null>(null);
   readonly loading = signal(false);
@@ -90,7 +96,7 @@ export class UsersListComponent implements OnInit {
         this.toast.success('Usuario eliminado.');
         this.reload();
       },
-      error: () => this.toast.error('No se pudo eliminar el usuario.'),
+      error: (error: HttpErrorResponse) => this.toast.error(apiMessage(error) ?? 'No se pudo eliminar el usuario.'),
     });
   }
 
