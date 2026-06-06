@@ -7,8 +7,8 @@ import { Profile, ProfilePayload } from '../models';
 export class ProfilesService {
   private readonly api = inject(ApiService);
 
-  list(page: number): Observable<Paginated<Profile>> {
-    return this.api.getPaginated<Profile>('/profiles', { page });
+  list(page: number, search = ''): Observable<Paginated<Profile>> {
+    return this.api.getPaginated<Profile>('/profiles', { page, search: search.trim() || undefined });
   }
 
   get(id: string): Observable<Profile> {

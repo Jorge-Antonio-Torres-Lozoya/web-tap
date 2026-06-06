@@ -59,6 +59,12 @@
 
 .inp.mono { font-family: var(--mono); }
 
+// Hide the browser's native password reveal/clear (Edge) — we provide our own eye.
+.inp::-ms-reveal,
+.inp::-ms-clear {
+  display: none;
+}
+
 // Password reveal button
 .eye {
   position: absolute;

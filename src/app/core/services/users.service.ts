@@ -7,8 +7,8 @@ import { UserDetail, UserListItem } from '../models';
 export class UsersService {
   private readonly api = inject(ApiService);
 
-  list(page: number): Observable<Paginated<UserListItem>> {
-    return this.api.getPaginated<UserListItem>('/users', { page });
+  list(page: number, search = ''): Observable<Paginated<UserListItem>> {
+    return this.api.getPaginated<UserListItem>('/users', { page, search: search.trim() || undefined });
   }
 
   get(id: string): Observable<UserDetail> {

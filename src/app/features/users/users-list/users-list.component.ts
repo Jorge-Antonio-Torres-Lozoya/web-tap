@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { AuthService } from '@core/services/auth.service';
 import { UsersService } from '@core/services/users.service';
@@ -16,7 +19,7 @@ import { UserDetailComponent } from '../user-detail/user-detail.component';
 @Component({
   selector: 'app-users-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, PaginatorComponent],
+  imports: [DatePipe, ReactiveFormsModule, PaginatorComponent],
   templateUrl: './users-list.component.html',
 })
 export class UsersListComponent implements OnInit {
@@ -32,6 +35,17 @@ export class UsersListComponent implements OnInit {
   readonly meta = signal<PaginationMeta | null>(null);
   readonly loading = signal(false);
   readonly error = signal(false);
+  readonly search = signal('');
+  readonly searchControl = new FormControl('', { nonNullable: true });
+
+  constructor() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
+      .subscribe((term) => {
+        this.search.set(term.trim());
+        this.load(FIRST_PAGE);
+      });
+  }
 
   ngOnInit(): void {
     this.load();
@@ -40,7 +54,7 @@ export class UsersListComponent implements OnInit {
   load(page = FIRST_PAGE): void {
     this.loading.set(true);
     this.error.set(false);
-    this.users.list(page).subscribe({
+    this.users.list(page, this.search()).subscribe({
       next: (result) => {
         this.items.set(result.items);
         this.meta.set(result.meta);

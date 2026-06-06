@@ -18,13 +18,17 @@
       <span class="count">{{ m.total }}</span>
     }
     <div class="tc-head__sp"></div>
+    <div class="tc-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+      <input type="search" [formControl]="searchControl" placeholder="Buscar…" aria-label="Buscar usuarios" />
+    </div>
     <button class="exp-link" type="button" (click)="exportPdf()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" /></svg>
-      PDF
+      Descargar PDF
     </button>
     <button class="exp-link" type="button" (click)="exportExcel()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6M9 13l3 4M12 13l-3 4" /></svg>
-      Excel
+      Descargar Excel
     </button>
   </div>
 
@@ -36,7 +40,13 @@
       <button class="btn btn--ghost btn--sm" type="button" (click)="load()">Reintentar</button>
     </div>
   } @else if (items().length === 0) {
-    <div class="state-block">No hay usuarios registrados.</div>
+    <div class="state-block">
+      @if (search()) {
+        Sin resultados para «{{ search() }}».
+      } @else {
+        No hay usuarios registrados.
+      }
+    </div>
   } @else {
     <table>
       <thead>

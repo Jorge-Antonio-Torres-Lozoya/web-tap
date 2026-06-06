@@ -7,8 +7,8 @@ import { Product, ProductPayload } from '../models';
 export class ProductsService {
   private readonly api = inject(ApiService);
 
-  list(page: number): Observable<Paginated<Product>> {
-    return this.api.getPaginated<Product>('/products', { page });
+  list(page: number, search = ''): Observable<Paginated<Product>> {
+    return this.api.getPaginated<Product>('/products', { page, search: search.trim() || undefined });
   }
 
   get(id: string): Observable<Product> {
