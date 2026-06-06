@@ -4,9 +4,13 @@ import { authGuard } from '@core/guards/auth.guard';
 import { sectionGuard } from '@core/guards/section.guard';
 import { AuthService } from '@core/services/auth.service';
 
-// Land on the first section the user is allowed to see.
-const firstSectionRedirect = (): string => {
-  const [first] = inject(AuthService).sections();
+// Resolves the root path. Runs during route matching (before guards), so it
+// must handle auth itself: no session -> login; otherwise the first allowed
+// section, or unauthorized when the user has none.
+export const rootRedirect = (): string => {
+  const auth = inject(AuthService);
+  if (!auth.isAuthenticated()) return '/login';
+  const [first] = auth.sections();
   return first ? `/${first}` : '/unauthorized';
 };
 
@@ -56,7 +60,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@features/profiles/profiles-list/profiles-list.component').then((m) => m.ProfilesListComponent),
       },
-      { path: '', pathMatch: 'full', redirectTo: firstSectionRedirect },
+      { path: '', pathMatch: 'full', redirectTo: rootRedirect },
     ],
   },
   { path: '**', redirectTo: 'login' },

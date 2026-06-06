@@ -1,7 +1,7 @@
 import { Environment } from './environment.model';
 
-// Production environment (default). Replaced by environment.development.ts in dev builds.
+// Production environment
 export const environment: Environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:8000/api/v1',
+  apiBaseUrl: 'https://web-tap-production.up.railway.app/api/v1',
 };
