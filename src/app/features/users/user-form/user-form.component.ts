@@ -71,7 +71,10 @@ export class UserFormComponent implements OnInit {
       name: this.fb.nonNullable.control(this.data.user?.name ?? '', [Validators.required, Validators.maxLength(255)]),
       username: this.fb.nonNullable.control(this.data.user?.username ?? '', [Validators.required, Validators.email]),
       phoneCountry: this.fb.nonNullable.control(this.data.user?.phone?.country_code ?? '+52'),
-      phoneNumber: this.fb.nonNullable.control(this.data.user?.phone?.number ?? ''),
+      // Optional, but if provided it must be exactly 10 digits.
+      phoneNumber: this.fb.nonNullable.control(this.data.user?.phone?.number ?? '', [
+        Validators.pattern(/^\d{10}$/),
+      ]),
       photo: this.fb.control<File | null>(null, this.isCreate ? [Validators.required] : []),
       password: this.fb.nonNullable.control(
         '',

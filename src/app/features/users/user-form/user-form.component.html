@@ -44,9 +44,12 @@
       </div>
       <div class="field">
         <label class="flab" for="phoneNumber">Teléfono</label>
-        <input id="phoneNumber" class="inp mono" formControlName="phoneNumber" placeholder="3141234567" />
+        <input id="phoneNumber" class="inp mono" formControlName="phoneNumber" inputmode="numeric" maxlength="10" placeholder="3141234567" />
       </div>
     </div>
+    @if (form.controls.phoneNumber.touched && form.controls.phoneNumber.hasError('pattern')) {
+      <div class="field-error" style="margin-top:-8px"><span>El teléfono debe tener exactamente 10 dígitos.</span></div>
+    }
     @if (form.hasError('phoneIncomplete') && form.controls.phoneNumber.touched) {
       <div class="field-error" style="margin-top:-8px"><span>El código de país es obligatorio (formato +52).</span></div>
     }
